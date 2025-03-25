@@ -1,5 +1,2 @@
-/before9step/obj
-/before9step/practice4
-
-/after9step/obj
-/after9step/practice4
+**/obj/
+**/practice4
