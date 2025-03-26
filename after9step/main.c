@@ -26,85 +26,65 @@ int main()
 
 	printf("Third: \n");
 	print_struct(router3);
+	
+	printf("Creating fourth struct.\n");
+	WIFI* router4 = dynamic_struct_create("ACER", 10, Is5G);
+	
+	if (router4 == NULL) return 1;
 
-	// Инициализация неупорядоченного списка 
-	printf("Initializing not ordered list with three structs.\n");
-	WIFI_list* router_list = (WIFI_list*)malloc(sizeof(WIFI_list));
-	if (router_list == NULL) 
+	printf("Fourth: \n");
+	print_struct(router4);
+
+	printf("Creating fifth struct.\n");
+	WIFI* router5 = dynamic_struct_create("Router", 6, Not5G);
+	
+	if (router5 == NULL) return 1;
+
+	printf("Fifth: \n");
+	print_struct(router5);
+
+	// Инициализация очереди
+	printf("Initializing queue with five structs.\n");
+	WIFI_queue* router_queue = (WIFI_queue*)malloc(sizeof(WIFI_queue));
+	if (router_queue == NULL) 
 	{
-		printf("Can't create list.\n");
+		printf("Can't create queue.\n");
 		return 1;
 	}
-	router_list->head = NULL;
+	router_queue->head = NULL;
 	
-	// Добавляем элементы в начало списка
-	if (push_front(router_list, router1) == 1) return 1;
-	if (push_front(router_list, router2) == 1) return 1;
-	if (push_front(router_list, router3) == 1) return 1;
+	// Добавляем элементы в начало очереди
+	if (enqueue(router_queue, router1) == 1) return 1;
+	if (enqueue(router_queue, router2) == 1) return 1;
+	if (enqueue(router_queue, router3) == 1) return 1;
+	if (enqueue(router_queue, router4) == 1) return 1;
+	if (enqueue(router_queue, router5) == 1) return 1;
 
-	print_list(router_list); // Вывод сведений о  каждом элементе списка
+	print_queue(router_queue); // Вывод сведений о каждом элементе очереди
 
-	printf("Removing front element:\n");
-	delete_front(router_list); // Удаления первого элемента списка
+	printf("Extracting last element:\n");
+	extract_data(router_queue); // Извлечение последнего элемента очереди
+
+	printf("Extracting last element:\n");
+	extract_data(router_queue); // Извлечение последнего элемента очереди
+
+	printf("Extracting last element:\n");
+	extract_data(router_queue); // Извлечение последнего элемента очереди
+
+	printf("Queue after extracting three last elements.\n");
+	print_queue(router_queue);
+
+	printf("Removing all elements from queue\n");
+	delete_queue(router_queue); // Удаление всех элементов полностью.
 	
-	print_list(router_list);
+	printf("Queue is clear\n");
 
-	delete_list(router_list); // Удаление списка полностью.
-	
 	//Освобождение динамической памяти, выделенной под экземпляры структуры
 	dynamic_struct_free(router1);
 	dynamic_struct_free(router2);
 	dynamic_struct_free(router3);
-	
-	printf("Creating first dynamic struct.\n");
-	router1 = dynamic_struct_create("TPLINK", 2, Is5G);
-
-	if (router1 == NULL) return 1;
-
-	printf("First: \n");
-	print_struct(router1);
-
-	printf("Creating second dynamic struct.\n");
-	router2 = dynamic_struct_create("TPLINK", 6, Is5G);
-
-	if (router2 == NULL) return 1;
-	
-	printf("Second: \n");
-	print_struct(router2);
-
-	printf("Creating third dynamic struct.\n");
-	router3 = dynamic_struct_create("ROSTELECOM", 2, Not5G);
-	
-	if (router3 == NULL) return 1;
-
-	printf("Third: \n");
-	print_struct(router3);
-
-	printf("Creating fourth dynamic struct.\n");
-	WIFI* router4 = dynamic_struct_create("4R", 3, Is5G);
-
-	if (router4 == NULL) return 1;
-	
-	printf("Initializing ordered list\n");
-
-	if(add_to_ordered(router_list, router1) == 1) return 1;
-	if(add_to_ordered(router_list, router2) == 1) return 1;
-	if(add_to_ordered(router_list, router3) == 1) return 1;
-	if(add_to_ordered(router_list, router4) == 1) return 1;
-
-	print_list(router_list);
-
-	delete_selected_element(router_list, router4);
-
-	printf("Ordered list after deleting element:\n");
-	print_list(router_list);
-
-	delete_list(router_list);
-
-	dynamic_struct_free(router1);
-	dynamic_struct_free(router2);
-	dynamic_struct_free(router3);
 	dynamic_struct_free(router4);
+	dynamic_struct_free(router5);
 
 	return 0;
 }

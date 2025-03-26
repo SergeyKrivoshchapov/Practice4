@@ -1,6 +1,6 @@
 #include "my_queue.h"
 
-int push_front(WIFI_list* list, WIFI data) 
+int enqueue(WIFI_queue* queue, WIFI data) 
 {
     WIFI_item* new_item = (WIFI_item*)malloc(sizeof(WIFI_item));
     if (!new_item)
@@ -9,26 +9,57 @@ int push_front(WIFI_list* list, WIFI data)
 	return 1;
     }
     new_item->data = data;
-    new_item->next = list->head;
-    list->head = new_item;
+    if (queue->head == NULL)
+    {
+        new_item->next = queue->head;
+        queue->head = new_item;
+        new_item->prev = NULL;
+        return 0;
+    }
+    new_item->next = queue->head;
+    queue->head->prev = new_item;
+    queue->head = new_item;
     return 0;
 }
 
-void delete_front(WIFI_list* list) 
+WIFI dequeue(WIFI_queue* queue) 
 {
-    if (list->head == NULL) 
+    WIFI data = {0};
+    if (queue->head == NULL) 
     {
         printf("Empty.\n");
-        return;
+        return data;
     }
-    struct WIFI_item* temp = list->head;
-    list->head = list->head->next;
+    
+    struct WIFI_item* temp = queue->head;
+
+    while (temp->next) temp = temp->next;
+    
+    data = temp->data;
+    
+    if (temp->prev) temp->prev->next = NULL;
+    else queue->head = NULL;
+    
     free(temp);
+    temp = NULL;
+    
+    return data;
 }
 
-void print_list(const WIFI_list* list) 
+void extract_data(WIFI_queue* queue)
 {
-    WIFI_item* current = list->head;
+    WIFI data = dequeue(queue);
+    WIFI empty = {0};
+    if (memcmp(&data, &empty, sizeof(WIFI)) != 0)
+    {
+        printf("Extracted from queue: \n");
+        print_struct(&data);
+    }
+}
+
+void print_queue(const WIFI_queue* queue) 
+{
+    WIFI_item* current = queue->head;
     while (current != NULL) 
     {
         print_struct(&current->data);
@@ -36,54 +67,9 @@ void print_list(const WIFI_list* list)
     }
 }
 
-void delete_list(WIFI_list* list) 
+void delete_queue(WIFI_queue* queue) 
 {
-    while (list->head != NULL) delete_front(list);
+    while (queue->head != NULL) dequeue(queue);
 }
 
-int add_to_ordered(WIFI_list* list, WIFI data) 
-{
-    WIFI_item* new_item = (WIFI_item*)malloc(sizeof(WIFI_item));
-    if (!new_item) 
-    {
-        printf("Can't create new item.");
-        return 1;
-    }
-    new_item->data = data;
-    new_item->next = NULL;
-
-    if (list->head == NULL || compare(&data, &list->head->data) < 0) 
-    {
-        new_item->next = list->head;
-        list->head = new_item;
-    } 
-    else 
-    {
-        WIFI_item* current = list->head;
-        while (current->next != NULL && compare(&data, &current->next->data) >= 0) current = current->next;
-        new_item->next = current->next;
-        current->next = new_item;
-    }
-    return 0;
-}
-
-void delete_selected_element(WIFI_list* list, WIFI data) 
-{
-    WIFI_item* current = list->head;
-    WIFI_item* previous = NULL;
-
-    while (current != NULL) 
-    {
-        if (is_equal(&current->data, &data)) 
-	{
-            if (previous == NULL) list->head = current->next; 
-	    else previous->next = current->next;
-            free(current);
-            return;
-        }
-        previous = current;
-        current = current->next;
-    }
-    printf("Selected element not in list.\n");
-}
 
